@@ -11,6 +11,8 @@ import {
 } from '@expo-google-fonts/inter'
 import { Loading } from '@/components/loading'
 
+import Toast from 'react-native-toast-message'
+
 export default function Layout() {
 
   const [fontsLoaded] = useFonts({
@@ -26,6 +28,7 @@ export default function Layout() {
 
   return (
     <SafeAreaView className='flex-1 bg-slate-900'>
+      <Toast />
     <Slot />
 
     </SafeAreaView>
