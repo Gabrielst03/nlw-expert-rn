@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, ScrollView } from 'react-native'
 import React from 'react'
 import { Link, router, useLocalSearchParams, useNavigation } from 'expo-router'
 import { PRODUCTS } from '@/utils/data/products'
@@ -7,26 +7,32 @@ import { Button } from '@/components/button'
 import { Feather } from '@expo/vector-icons'
 import { LinkButton } from '@/components/link-button'
 import { useCartStore } from '@/stores/cart-store'
+import { Redirect } from 'expo-router'
 
 import Toast from 'react-native-toast-message'
 export default function Product() {
 
   const {id} = useLocalSearchParams()
   
-  const product = PRODUCTS.filter((item) => item.id === id)[0]
+  const product = PRODUCTS.find((item) => item.id === id)
 
   const cartStore = useCartStore()
 
   function handleAddToCart() {
-    cartStore.add(product)
+    cartStore.add(product!)
     router.push('/')
+  }
+
+
+  if(!product) {
+    return <Redirect href={'/'}/>
   }
 
   return (
     <View className='flex-1'>
-      <Image source={product.cover} className='w-full h-52' resizeMode='cover'/>
+      <Image source={product.cover} className='w-full h-64' resizeMode='cover'/>
 
-      <View className='p-5 mt-8 flex-1'>
+      <ScrollView className='p-5 mt-8 h-full pb-12'>
         <Text className='font-heading text-slate-100 text-2xl'>{product.title}</Text>
         <Text className='text-lime-400 text-2xl font-heading my-2'>
           {formatCurrency(product.price)}
@@ -39,14 +45,14 @@ export default function Product() {
 
         {
           product.ingredients.map((item) => (
-            <Text className='text-slate-400 font-body text-xs leading-6' key={item}>
+            <Text className='text-slate-400 font-body text-xs leading-[14px]' key={item}>
              • {item}
             </Text>
           ))
         }
-      </View>
+      </ScrollView>
 
-      <View className='p-5 pb-8 gap-5'>
+      <View className='p-5 pb-8 gap-3'>
         <Button onPress={handleAddToCart}>
           <Button.Icon>
             <Feather name='plus-circle' size={20}/>
